@@ -12,5 +12,6 @@ inventory.forEach(p =>
 );
 //Step 3 
 //add a new product with push 
-let newProduct={sku:"SKU-005", name1:"grapes", price: 2.50, stock:17};inventory.push(newProduct);
-console.log("Added:", `${newProduct.sku} | ${newProduct.name} | ${fmt$(newProduct.price)} | Stock: ${newProduct.stock}`);
+inventory.push({sku:"SKU-005", name1:"grapes", price: 2.50, stock:17});
+let removedProduct=inventory.pop();
+console.log("Removed Product; ", removedProductsku + "|" + removedProduct.itemname);

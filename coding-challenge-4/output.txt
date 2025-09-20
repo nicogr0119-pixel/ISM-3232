@@ -81,7 +81,7 @@ Inventory after checkout: [
   { name: 'Hardcover Notebook', inventory: 17 }
 ]
 
---- Step 6: for...in on a single product (post-discount) ---
+--- Step 6: for...in on first product ---
 name: Aurora Headphones
 category: electronics
 price: 120
@@ -89,7 +89,7 @@ inventory: 5
 categoryDiscountRate: 0.2
 priceAfterCategory: 96
 
---- Step 7: Object.entries() + destructuring (post-inventory update) ---
+--- Step 7: Object.entries() + destructuring (all products) ---
 [Aurora Headphones] name -> Aurora Headphones
 [Aurora Headphones] category -> electronics
 [Aurora Headphones] price -> 120

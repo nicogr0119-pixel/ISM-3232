@@ -1,0 +1,122 @@
+Initial catalog: [
+  {
+    name: 'Aurora Headphones',
+    category: 'electronics',
+    price: 120,
+    inventory: 6
+  },
+  {
+    name: 'Trailflex Jacket',
+    category: 'apparel',
+    price: 80,
+    inventory: 10
+  },
+  {
+    name: 'Everyday Oats (2lb)',
+    category: 'groceries',
+    price: 6.5,
+    inventory: 30
+  },
+  {
+    name: 'Citrus Dish Soap',
+    category: 'household',
+    price: 3.99,
+    inventory: 40
+  },
+  {
+    name: 'Hardcover Notebook',
+    category: 'stationery',
+    price: 12,
+    inventory: 20
+  }
+]
+After category discounts: [
+  {
+    name: 'Aurora Headphones',
+    category: 'electronics',
+    basePrice: 120,
+    rate: 0.2,
+    priceAfterCategory: 96
+  },
+  {
+    name: 'Trailflex Jacket',
+    category: 'apparel',
+    basePrice: 80,
+    rate: 0.15,
+    priceAfterCategory: 68
+  },
+  {
+    name: 'Everyday Oats (2lb)',
+    category: 'groceries',
+    basePrice: 6.5,
+    rate: 0.1,
+    priceAfterCategory: 5.85
+  },
+  {
+    name: 'Citrus Dish Soap',
+    category: 'household',
+    basePrice: 3.99,
+    rate: 0.1,
+    priceAfterCategory: 3.59
+  },
+  {
+    name: 'Hardcover Notebook',
+    category: 'stationery',
+    basePrice: 12,
+    rate: 0,
+    priceAfterCategory: 12
+  }
+]
+
+--- Checkout Simulation (3 customers) ---
+Customer #1 (regular) — Subtotal: $107.70, Extra Disc: 0%, Total: $107.70
+Customer #2 (student) — Subtotal: $104.00, Extra Disc: 5%, Total: $98.80
+Customer #3 (senior) — Subtotal: $13.03, Extra Disc: 7%, Total: $12.12
+
+Inventory after checkout: [
+  { name: 'Aurora Headphones', inventory: 5 },
+  { name: 'Trailflex Jacket', inventory: 9 },
+  { name: 'Everyday Oats (2lb)', inventory: 27 },
+  { name: 'Citrus Dish Soap', inventory: 38 },
+  { name: 'Hardcover Notebook', inventory: 17 }
+]
+
+--- Step 6: for...in on a single product (post-discount) ---
+name: Aurora Headphones
+category: electronics
+price: 120
+inventory: 5
+categoryDiscountRate: 0.2
+priceAfterCategory: 96
+
+--- Step 7: Object.entries() + destructuring (post-inventory update) ---
+[Aurora Headphones] name -> Aurora Headphones
+[Aurora Headphones] category -> electronics
+[Aurora Headphones] price -> 120
+[Aurora Headphones] inventory -> 5
+[Aurora Headphones] categoryDiscountRate -> 0.2
+[Aurora Headphones] priceAfterCategory -> 96
+[Trailflex Jacket] name -> Trailflex Jacket
+[Trailflex Jacket] category -> apparel
+[Trailflex Jacket] price -> 80
+[Trailflex Jacket] inventory -> 9
+[Trailflex Jacket] categoryDiscountRate -> 0.15
+[Trailflex Jacket] priceAfterCategory -> 68
+[Everyday Oats (2lb)] name -> Everyday Oats (2lb)
+[Everyday Oats (2lb)] category -> groceries
+[Everyday Oats (2lb)] price -> 6.5
+[Everyday Oats (2lb)] inventory -> 27
+[Everyday Oats (2lb)] categoryDiscountRate -> 0.1
+[Everyday Oats (2lb)] priceAfterCategory -> 5.85
+[Citrus Dish Soap] name -> Citrus Dish Soap
+[Citrus Dish Soap] category -> household
+[Citrus Dish Soap] price -> 3.99
+[Citrus Dish Soap] inventory -> 38
+[Citrus Dish Soap] categoryDiscountRate -> 0.1
+[Citrus Dish Soap] priceAfterCategory -> 3.59
+[Hardcover Notebook] name -> Hardcover Notebook
+[Hardcover Notebook] category -> stationery
+[Hardcover Notebook] price -> 12
+[Hardcover Notebook] inventory -> 17
+[Hardcover Notebook] categoryDiscountRate -> 0
+[Hardcover Notebook] priceAfterCategory -> 12

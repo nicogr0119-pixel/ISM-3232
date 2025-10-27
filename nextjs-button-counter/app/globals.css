@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+:root {
+--bg: #0b0c10;
+--surface: #12141a;
+--card: #1a1f29;
+--text: #e8e8e8;
+--muted: #b6bdc6;
+--primary: #6ea8fe;
+--primary-contrast: #0a0e14;
+--danger: #ff7a7a;
+--ring: #2d3748;
+}
+
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+margin: 0;
+font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+background: radial-gradient(1200px 700px at 10% -20%, #1f2430 0%, var(--bg) 60%);
+color: var(--text);
+}
+
+
+.page { max-width: 1000px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+.hero { text-align: center; margin-bottom: 2rem; }
+.hero h1 { font-size: 2.25rem; margin: 0 0 0.25rem; }
+.tagline { color: var(--muted); margin: 0; }
+
+
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+.card { background: var(--card); border: 1px solid #232833; border-radius: 14px; padding: 1rem; box-shadow: 0 8px 22px rgba(0,0,0,0.25); }
+.card h3 { margin: 0 0 0.75rem; }
+
+
+.counter { display: grid; gap: 0.75rem; }
+.counter__header h2 { margin: 0; font-size: 1.125rem; color: var(--muted); }
+
+
+.counter__live { padding: 0.75rem; border-radius: 10px; background: var(--surface); border: 1px solid #232833; }
+.counter__value { font-weight: 700; }
+
+
+.counter__controls { display: flex; gap: 0.5rem; }
+.btn { appearance: none; border: 1px solid #2a3240; background: var(--surface); color: var(--text); padding: 0.6rem 0.9rem; border-radius: 10px; font-weight: 600; cursor: pointer; transition: transform 0.02s ease-in-out; }
+.btn:hover { transform: translateY(-1px); }
+.btn:disabled, .btn[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; }
+.btn--reset { border-color: #3a2a2a; }
+
+
+.counter__step { display: grid; grid-template-columns: max-content 1fr; gap: 0.5rem; align-items: center; }
+.counter__step label { color: var(--muted); }
+.counter__step input { width: 100%; padding: 0.55rem 0.6rem; border-radius: 10px; border: 1px solid #2a3240; background: var(--surface); color: var(--text); }
+.counter__step input:focus { outline: 2px solid var(--primary); outline-offset: 2px; box-shadow: 0 0 0 3px rgba(110,168,254,0.25); }

@@ -14,23 +14,28 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Features
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+- Loads tickets from /api/tickets on first visit
+- Filter by Status and Priority (controlled inputs)
+- Search by title/description (instant)
+- Add to My Queue, remove, clear
+- Live updates: tickets randomly change status/priority every 6–10s
+- Loading / Error / Empty states
+- Tailwind styling
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Structure
 
-## Learn More
+- src/app/page.js – Server component entry
+- src/app/api/tickets/route.js – API (GET) returning 16 tickets
+- src/app/components/* – Client components (Board, filters, list, queue)
+- src/app/lib/severity.js – small utility maps
 
-To learn more about Next.js, take a look at the following resources:
+## Rubric checklist
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Components, keys by id ✅
+- Lifting state in Board ✅
+- Controlled inputs ✅
+- Effects + cleanup ✅
+- UX states ✅
+- App Router + Tailwind ✅

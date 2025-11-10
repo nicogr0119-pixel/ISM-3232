@@ -7,23 +7,23 @@ import PriorityFilter from './PriorityFilter';
 import SearchBox from './SearchBox';
 import MyQueueSummary from './MyQueueSummary';
 import StatusMessage from './StatusMessage';
-import { priorityOrder, statusOrder } from '../lib/severity';
 
 const STATUS_OPTIONS = ['All', 'Open', 'In Progress', 'On Hold', 'Resolved'];
 const PRIORITY_OPTIONS = ['All', 'Low', 'Medium', 'High', 'Critical'];
 
 export default function Board() {
-  // lifted state
+  // Lifted state
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [filters, setFilters] = useState({ status: 'All', priority: 'All' });
   const [search, setSearch] = useState('');
-  const [queue, setQueue] = useState({}); // { [id]: true }
+  const [queue, setQueue] = useState({}); // { [ticketId]: true }
 
-  // fetch on mount
+  // Fetch tickets on mount
   useEffect(() => {
     let cancelled = false;
+
     async function load() {
       try {
         setLoading(true);
@@ -37,67 +37,90 @@ export default function Board() {
         if (!cancelled) setLoading(false);
       }
     }
+
     load();
-    return () => { cancelled = true; };
-  }, []);
-
-  // live updates (status/priority changes)
-  useEffect(() => {
-    if (!tickets.length) return;
-
-    let cancelled = false;
-
-    const nextDelay = () => {
-      // 6–10 seconds randomized
-      return 6000 + Math.floor(Math.random() * 4000);
-    };
-
-    const realisticStatusNext = (s) => {
-      switch (s) {
-        case 'Open': return 'In Progress';
-        case 'In Progress': return Math.random() < 0.7 ? 'On Hold' : 'Resolved';
-        case 'On Hold': return Math.random() < 0.6 ? 'In Progress' : 'Open';
-        default: return 'Resolved';
-      }
-    };
-    const realisticPriorityNext = (p) => {
-      const steps = ['Low', 'Medium', 'High', 'Critical'];
-      const i = steps.indexOf(p);
-      // small chance to go up/down one step
-      const delta = Math.random() < 0.5 ? 1 : -1;
-      const ni = Math.min(steps.length - 1, Math.max(0, i + delta));
-      return steps[ni];
-    };
-
-    const tick = () => {
-      if (cancelled) return;
-      setTickets((prev) => {
-        if (!prev.length) return prev;
-        const idx = Math.floor(Math.random() * prev.length);
-        const chosen = prev[idx];
-        const changeStatus = Math.random() < 0.6; // more likely to move status
-        const updated = {
-          ...chosen,
-          status: changeStatus ? realisticStatusNext(chosen.status) : chosen.status,
-          priority: changeStatus ? chosen.priority : realisticPriorityNext(chosen.priority),
-          updatedAt: new Date().toISOString(),
-        };
-        const copy = prev.slice();
-        copy[idx] = updated;
-        return copy;
-      });
-      // schedule next
-      timeout = setTimeout(tick, nextDelay());
-    };
-
-    let timeout = setTimeout(tick, nextDelay());
     return () => {
       cancelled = true;
-      clearTimeout(timeout);
     };
-  }, [tickets.length]); // start after initial load
+  }, []);
 
-  // derived visible tickets
+  /**
+   * Live updates effect:
+   * - Every 6–10s, choose a random ticket and change either status or priority.
+   * - Update updatedAt to now.
+   * - Use recursive setTimeout so each tick gets a fresh randomized delay.
+   * - Clean up the pending timeout on unmount or dependency change.
+   */
+  useEffect(() => {
+    // Only start once we have data and no error
+    if (loading || error || tickets.length === 0) return;
+
+    // Helper transitions (kept simple & realistic)
+    const nextStatus = (s) => {
+      switch (s) {
+        case 'Open':
+          return 'In Progress';
+        case 'In Progress':
+          return Math.random() < 0.7 ? 'On Hold' : 'Resolved';
+        case 'On Hold':
+          return Math.random() < 0.6 ? 'In Progress' : 'Open';
+        case 'Resolved':
+        default:
+          return 'Resolved';
+      }
+    };
+
+    const nextPriority = (p) => {
+      const levels = ['Low', 'Medium', 'High', 'Critical'];
+      const i = levels.indexOf(p);
+      // Nudge up or down by one step (bounded)
+      const delta = Math.random() < 0.5 ? 1 : -1;
+      const ni = Math.min(levels.length - 1, Math.max(0, i + delta));
+      return levels[ni];
+    };
+
+    let timerId;
+
+    const scheduleNextTick = () => {
+      // Random delay 6–10 seconds
+      const delay = 6000 + Math.floor(Math.random() * 4000);
+      timerId = setTimeout(() => {
+        // Apply one random change
+        setTickets((prev) => {
+          if (prev.length === 0) return prev;
+          const idx = Math.floor(Math.random() * prev.length);
+          const chosen = prev[idx];
+
+          const changeStatus = Math.random() < 0.6; // slightly prefer status changes
+          const updated = {
+            ...chosen,
+            status: changeStatus ? nextStatus(chosen.status) : chosen.status,
+            priority: changeStatus ? chosen.priority : nextPriority(chosen.priority),
+            updatedAt: new Date().toISOString(),
+          };
+
+          const copy = prev.slice();
+          copy[idx] = updated;
+          return copy;
+        });
+
+        // Queue next randomized tick
+        scheduleNextTick();
+      }, delay);
+    };
+
+    // Kick off the first tick
+    scheduleNextTick();
+
+    // Cleanup
+    return () => {
+      clearTimeout(timerId);
+    };
+    // We only depend on "loading/error/tickets.length"
+    // so the loop starts after initial data is present and restarts if list goes from 0->N.
+  }, [loading, error, tickets.length]);
+
+  // Derived visible tickets (never store derived state)
   const visibleTickets = useMemo(() => {
     const q = search.trim().toLowerCase();
     return tickets.filter((t) => {
@@ -111,7 +134,7 @@ export default function Board() {
     });
   }, [tickets, filters, search]);
 
-  // queue handlers
+  // Queue handlers
   const addToQueue = (id) => {
     setQueue((prev) => (prev[id] ? prev : { ...prev, [id]: true }));
   };
@@ -124,7 +147,7 @@ export default function Board() {
   };
   const clearQueue = () => setQueue({});
 
-  // options for controlled inputs
+  // Controlled input handlers
   const onStatusChange = (val) => setFilters((f) => ({ ...f, status: val }));
   const onPriorityChange = (val) => setFilters((f) => ({ ...f, priority: val }));
 
@@ -156,10 +179,10 @@ export default function Board() {
         </div>
       </div>
 
-      {/* Status message */}
+      {/* Loading/Error/Empty */}
       <StatusMessage loading={loading} error={error} isEmpty={isEmpty} />
 
-      {/* Ticket list */}
+      {/* Ticket grid */}
       {!loading && !error && visibleTickets.length > 0 && (
         <TicketList
           tickets={visibleTickets}
@@ -168,7 +191,7 @@ export default function Board() {
         />
       )}
 
-      {/* My Queue */}
+      {/* Queue */}
       <MyQueueSummary
         tickets={tickets}
         queuedMap={queue}
